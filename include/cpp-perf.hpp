@@ -86,8 +86,8 @@ namespace perf {
             std::string m_name;
 
         public:
-            timer() : m_named(false) {}
-            timer(const std::string& name) : m_named(true), m_name(name) {}
+            timer(bool start = true) : m_named(false) { if(start) m_start = m_clock.now(); }
+            timer(const std::string& name, bool start = true) : m_named(true), m_name(name) { if(start) m_start = m_clock.now(); }
 
             static std::string format_name(const std::string& file, unsigned line, const std::string& function) {
                 std::stringstream strm;
@@ -196,5 +196,7 @@ namespace perf {
         return o;
     }
 }
+
+#define PERF_TIMER() perf::timer(perf::timer::format_name(__FILE__, __LINE__, __FUNCTION__));
 
 #endif
