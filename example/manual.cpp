@@ -20,12 +20,14 @@ struct example3 {
 
 int main()
 {
+    example3 functor;
+
     // you can add cases via the constructor
     perf::perf_suite suite({
         // you can use lambdas
         { "example1", []() { std::this_thread::sleep_for(perf::milliseconds(42)); return true; } },
         { "example2", example2},
-        { "example3", example3()}
+        { "example3", functor}
     });
 
     // you can add cases later
