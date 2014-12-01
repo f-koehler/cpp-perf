@@ -3,6 +3,8 @@ cpp-perf
 
 A small, header-only performance measurement library for C++11.
 
+
+
 Easy inline code measurement
 ----------------------------
 ``` c++
@@ -22,12 +24,20 @@ int main() {
 }
 ```
 
+Output:
+```
+/somepath/inline.cpp:8:main:   20ms
+```
+
+
 
 Automatic suite
 ---------------
 ``` c++
 
 ```
+
+
 
 Manual suites
 -------------
@@ -76,4 +86,19 @@ int main()
 
     return 0;
 }
+```
+
+Output
+```
+===============================
+Name:  perf_suite
+Case        Success    Duration
+-------------------------------
+example1       1       42ms  
+example2       1       312ms 
+example3       0       147μs
+example4       1       594μs
+-------------------------------
+Total:       0.75      355ms
+===============================
 ```
