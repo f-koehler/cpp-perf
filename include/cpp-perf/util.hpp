@@ -1,7 +1,7 @@
-#ifndef PERF_UTIL_HPP
-#define PERF_UTIL_HPP
+#ifndef UTIL_HPP
+#define UTIL_HPP
 
-#include "perf_types.hpp"
+#include <cpp-perf/types.hpp>
 #include <sstream>
 
 namespace perf

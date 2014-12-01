@@ -1,5 +1,5 @@
 #define PERF_ENABLE_INLINE
-#include <perf_timer.hpp>
+#include <cpp-perf/timer.hpp>
 
 #include <thread>
 

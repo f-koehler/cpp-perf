@@ -1,8 +1,8 @@
-#ifndef PERF_SUITE_HPP 
-#define PERF_SUITE_HPP 
+#ifndef SUITE_HPP 
+#define SUITE_HPP 
 
-#include "perf_types.hpp"
-#include "perf_util.hpp"
+#include <cpp-perf/types.hpp>
+#include <cpp-perf/util.hpp>
 
 #include <algorithm>
 #include <vector>

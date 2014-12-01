@@ -1,4 +1,4 @@
-#include <perf_suite.hpp>
+#include <cpp-perf/suite.hpp>
 #include <thread>
 #include <iostream>
 using namespace std;

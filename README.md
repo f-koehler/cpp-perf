@@ -10,7 +10,7 @@ Easy inline code measurement
 ``` c++
 // remove this #define and the code will be executed normally
 #define PERF_ENABLE_INLINE
-#include <perf_timer.hpp>
+#include <cpp-perf/timer.hpp>
 
 #include <thread>
 
@@ -43,7 +43,7 @@ Manual suites
 -------------
 
 ``` c++
-#include <perf_suite.hpp>
+#include <cpp-perf/suite.hpp>
 #include <thread>
 #include <iostream>
 using namespace std;
@@ -88,7 +88,7 @@ int main()
 }
 ```
 
-Output
+Output:
 ```
 ===============================
 Name:  perf_suite

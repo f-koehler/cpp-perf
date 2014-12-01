@@ -1,8 +1,8 @@
-#ifndef PERF_TIMER_HPP
-#define PERF_TIMER_HPP
+#ifndef TIMER_HPP
+#define TIMER_HPP
 
-#include "perf_types.hpp"
-#include "perf_util.hpp"
+#include <cpp-perf/types.hpp>
+#include <cpp-perf/util.hpp>
 #include <ostream>
 #include <string>
 #include <sstream>

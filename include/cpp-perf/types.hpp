@@ -1,5 +1,5 @@
-#ifndef PERF_TYPES_HPP
-#define PERF_TYPES_HPP
+#ifndef TYPES_HPP
+#define TYPES_HPP
 
 #include <chrono>
 #include <functional>

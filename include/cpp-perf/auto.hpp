@@ -1,8 +1,8 @@
-#ifndef PERF_AUTO_HPP
-#define PERF_AUTO_HPP
+#ifndef AUTO_HPP
+#define AUTO_HPP
 
+#include <cpp-perf/suite.hpp>
 #include <iostream>
-#include "perf_suite.hpp"
 
 #ifndef PERF_AUTO_MODULE
 #define PERF_AUTO_MODULE "PerfAutoModule"

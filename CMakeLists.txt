@@ -17,7 +17,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQ
     #add_definitions(-std=c++0x)
 endif()
 
-include_directories(.)
+include_directories(include)
 
 if(${PERF_EXAMPLES})
     add_subdirectory(example)
