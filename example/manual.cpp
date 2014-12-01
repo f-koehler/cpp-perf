@@ -1,11 +1,10 @@
-#include <cpp-perf/suite.hpp>
+#include <cpp-perf.hpp>
 #include <thread>
-#include <iostream>
 using namespace std;
 
 // you can use functions
 bool example2() {
-    std::this_thread::sleep_for(perf::milliseconds(312));
+    std::this_thread::sleep_for(perf::milliseconds(100));
     return true;
 }
 
@@ -23,15 +22,15 @@ int main()
     example3 functor;
 
     // you can add cases via the constructor
-    perf::perf_suite suite({
+    perf::suite suite({
         // you can use lambdas
-        { "example1", []() { std::this_thread::sleep_for(perf::milliseconds(42)); return true; } },
+        { "example1", []() { std::this_thread::sleep_for(perf::milliseconds(40)); return true; } },
         { "example2", example2},
         { "example3", functor}
     });
 
     // you can add cases later
-    suite.add_case("example4", []() { std::this_thread::sleep_for(perf::microseconds(512)); return true; });
+    suite.add_case("example4", []() { std::this_thread::sleep_for(perf::microseconds(800)); return true; });
 
     // run all cases at once
     suite.run();
