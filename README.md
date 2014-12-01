@@ -1,16 +1,36 @@
-perf
-====
+cpp-perf
+========
 
 A small, header-only performance measurement library for C++11.
 
-Automatic execution
--------------------
+Easy inline code measurement
+----------------------------
+``` c++
+// remove this #define and the code will be executed normally
+#define PERF_ENABLE_INLINE
+#include <perf_timer.hpp>
+
+#include <thread>
+
+int main() {
+    // measure execution time of code and print it out
+    PERF_TIME(
+        std::this_thread::sleep_for(perf::milliseconds(20));
+    );
+
+    return 0;
+}
+```
+
+
+Automatic suite
+---------------
 ``` c++
 
 ```
 
-Manual execution
-----------------
+Manual suites
+-------------
 
 ``` c++
 #include <perf_suite.hpp>

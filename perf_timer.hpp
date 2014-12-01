@@ -6,6 +6,19 @@
 #include <ostream>
 #include <string>
 #include <sstream>
+#include <iostream>
+
+#ifdef PERF_ENABLE_INLINE
+#define PERF_TIME(x) { \
+    perf::perf_timer timer(perf::perf_timer::format_name(__FILE__, __LINE__, __FUNCTION__)); \
+    timer.start(); \
+    x; \
+    timer.stop();  \
+    std::cout << timer << std::endl; \
+}
+#else
+#define PERF_TIME(x) x
+#endif
 
 namespace perf
 {
@@ -23,11 +36,9 @@ namespace perf
             perf_timer() : m_named(false) {}
             perf_timer(const std::string& name) : m_named(true), m_name(name) {}
 
-            static std::string format_name(const std::string& file, unsigned first_line, unsigned last_line, const std::string& function) {
+            static std::string format_name(const std::string& file, unsigned line, const std::string& function) {
                 std::stringstream strm;
-                strm << file << ":" << first_line;
-                if(last_line > first_line) strm << "-" << last_line;
-                strm << ":" << function << ":";
+                strm << file << ":" << line << ":" << function << ":";
                 return strm.str();
             }
 
