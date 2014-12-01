@@ -12,9 +12,7 @@ Easy inline code measurement
 #include <thread>
 
 int main() {
-    // measure time of code betwee start and stop
-    perf::timer t(perf::timer::format_name(__FILE__, __LINE__, __FUNCTION__));
-    t.start();
+    perf::timer t = PERF_TIMER();
     std::this_thread::sleep_for(perf::milliseconds(50));
     std::cout << t.stop() << std::endl;
 
