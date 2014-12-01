@@ -8,5 +8,11 @@ int main() {
         std::this_thread::sleep_for(perf::milliseconds(20));
     );
 
+    PERF_TIME(
+        for(int i = 0; i < 10; i++) {
+            std::this_thread::sleep_for(perf::milliseconds(20));
+        }
+    );
+
     return 0;
 }
