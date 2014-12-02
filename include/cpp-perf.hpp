@@ -1,17 +1,19 @@
 #ifndef CPP_PERF_HPP
 #define CPP_PERF_HPP
 
-#include <algorithm>
 #include <chrono>
+#include <algorithm>
 #include <functional>
 #include <ostream>
 #include <iostream>
-#include <memory>
 #include <sstream>
 #include <string>
+#include <stack>
 #include <vector>
+#include <memory>
 
-namespace perf {
+namespace perf
+{
     typedef std::chrono::high_resolution_clock clock;
     typedef clock::time_point time_point;
     typedef clock::duration duration;
@@ -21,16 +23,25 @@ namespace perf {
     typedef std::chrono::milliseconds milliseconds;
     typedef std::chrono::microseconds microseconds;
     typedef std::chrono::nanoseconds nanoseconds;
-
     typedef std::function<bool(void)> perf_func;
-
     struct perf_case {
         perf_func f;
         std::string name;
         bool success;
         duration time;
     };
+    class timer;
+    class suite;
 
+    std::ostream* inline_out_ptr() {
+        static std::ostream* inline_out_ptr = &std::cout;
+        return inline_out_ptr;
+    }
+
+    std::stack<timer>& inline_timer_stack() {
+        static std::stack<timer> inline_timer_stack;
+        return inline_timer_stack;
+    }
 
     std::string format_duration(const duration& time)
     {
@@ -71,9 +82,22 @@ namespace perf {
         return strm.str();
     }
 
-    std::string format_bool(bool b) { return b ? "true " : "false"; }
-
-    void make_string_length(std::string& str, size_t len, char filler = ' ') { while(str.length() < len) str += filler; }
+    std::string format_bool(bool b)
+    {
+        return b ? "true " : "false";
+    }
+    std::string format_code_position(const std::string file, std::size_t line, std::string function = "")
+    {
+        std::stringstream strm;
+        strm << file << ":";
+        if(!function.empty()) strm << function << ":";
+        strm << line << ":";
+        return strm.str();
+    }
+    void fill_string(std::string& str, std::size_t len, char filler = ' ')
+    {
+        while(str.length() < len) str += filler;
+    }
    
 
     class timer
@@ -89,12 +113,6 @@ namespace perf {
         public:
             timer(bool start = true) : m_named(false) { if(start) m_start = m_clock.now(); }
             timer(const std::string& name, bool start = true) : m_named(true), m_name(name) { if(start) m_start = m_clock.now(); }
-
-            static std::string format_name(const std::string& file, unsigned line, const std::string& function) {
-                std::stringstream strm;
-                strm << file << ":" << line << ":" << function << ":";
-                return strm.str();
-            }
 
             void start() {
                 m_start = m_clock.now();
@@ -162,12 +180,12 @@ namespace perf {
         })->time).length();
 
         std::string header_case = "Case", header_success = "Success", header_duration = "Duration", space1 = "", space2 = "", vline = "", vsubline = "";
-        make_string_length(header_case, longest_name);
-        make_string_length(header_duration, longest_time);
-        make_string_length(space1, 4);
-        make_string_length(space2, 4);
-        make_string_length(vline, (header_case+space1+header_success+space2+header_duration).length(), '=');
-        make_string_length(vsubline, (header_case+space1+header_success+space2+header_duration).length(), '-');
+        fill_string(header_case, longest_name);
+        fill_string(header_duration, longest_time);
+        fill_string(space1, 4);
+        fill_string(space2, 4);
+        fill_string(vline, (header_case+space1+header_success+space2+header_duration).length(), '=');
+        fill_string(vsubline, (header_case+space1+header_success+space2+header_duration).length(), '-');
 
         std::string name, success, duration;
         auto successful = 0ul;
@@ -178,15 +196,15 @@ namespace perf {
         o << vsubline << std::endl;
         for(auto c : suite.m_cases) {
             std::string n = c.name, d = format_duration(c.time), s = c.success ? "   1   " : "   0   ";
-            make_string_length(n, longest_name);
-            make_string_length(d, longest_time);
+            fill_string(n, longest_name);
+            fill_string(d, longest_time);
             o << n << space1 << s << space2 << d << std::endl;
             if(c.success) successful++;
         }
         o << vsubline << std::endl;
 
         name = "Total:";
-        make_string_length(name, longest_name);
+        fill_string(name, longest_name);
 
         auto rate = double(successful)/double(suite.m_cases.size());
         rate *= 100.;
@@ -197,8 +215,9 @@ namespace perf {
         return o;
     }
 
-#define PERF_START() perf::timer inline_timer(perf::timer::format_name(__FILE__, __LINE__, __FUNCTION__));
-#define PERF_STOP() std::cout << inline_timer.stop() << std::endl;
+#define PERF_CODE_POSITION() perf::format_code_position(__FILE__, __LINE__, __FUNCTION__)
+#define PERF_START() perf::inline_timer_stack().push(perf::timer(PERF_CODE_POSITION(), false)); perf::inline_timer_stack().top().start();
+#define PERF_STOP() *perf::inline_out_ptr() << perf::inline_timer_stack().top().stop() << std::endl; perf::inline_timer_stack().pop();
 
 }
 
