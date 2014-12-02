@@ -1,3 +1,33 @@
+/**
+ * @file
+ * @author Fabian Köhler fabian2804@googlemail.com
+ * @version 1.0
+ *
+ * @section LICENSE
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Fabian Köhler
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 #ifndef CPP_PERF_HPP
 #define CPP_PERF_HPP
 
@@ -34,6 +64,16 @@ namespace perf
     class suite;
     class inline_timer;
 
+    /*! \brief Format a duration to be human readable.
+     *
+     * This function tries the different durations that are available through the
+     * standard library. If the duration is longer than one hour the returned
+     * string will represent the time rounded to hours. For shorter periods the
+     * function will continue with minutes in the same manner.
+     *
+     * \parameter time The time duration to format
+     * \return The duration formatted as a string
+     */
     std::string format_duration(const duration& time)
     {
         std::stringstream strm;
@@ -73,10 +113,17 @@ namespace perf
         return strm.str();
     }
 
-    std::string format_bool(bool b)
-    {
-        return b ? "true " : "false";
-    }
+    /*! \brief Format code positions.
+     *
+     * The function parameter is optional as not every code position must be in a function.
+     * The string will have the following format:
+     * file:[function:]line
+     *
+     * \parameter file Path to the source file. You can use the __FILE__ macro
+     * \parameter line Line of code in the file. You can use the __LINE__ macro
+     * \parameter function The function containing this position. You can use the __FUNCTION__ macro
+     * \return Code position formatted as a string.
+     */
     std::string format_code_position(const std::string file, std::size_t line, std::string function = "")
     {
         std::stringstream strm;
@@ -85,7 +132,16 @@ namespace perf
         strm << line;
         return strm.str();
     }
-    void fill_string(std::string& str, std::size_t len, char filler = ' ')
+
+    /*! \brief Append charaters to lengthen a string.
+     *
+     * The filler character will be appended to the string str until it reaches the length len
+     *
+     * \param str The string which should be lengthened.
+     * \param len New length to achieve.
+     * \param filler The character to be used to lengthen the string
+     */
+    void lengthen_string(std::string& str, std::size_t len, char filler = ' ')
     {
         while(str.length() < len) str += filler;
     }
@@ -98,13 +154,18 @@ namespace perf
             time_point m_start, m_stop;
 
         public:
-            timer(bool start = true) { if(start) m_start = m_clock.now(); }
+            timer(bool start = true)
+            {
+                if(start) m_start = m_clock.now();
+            }
 
-            void start() {
+            void start()
+            {
                 m_start = m_clock.now();
             }
 
-            void stop() {
+            void stop()
+            {
                 m_stop = m_clock.now();
             }
 
@@ -121,9 +182,13 @@ namespace perf
             std::string m_function;
 
         public:
-            inline_timer(const std::string& file, const std::size_t line, const std::string& function = "") : m_file(file), m_first_line(line), m_last_line(line), m_function(function) {}
+            inline_timer(const std::string& file, const std::size_t line, const std::string& function = "") :
+                m_file(file), m_first_line(line), m_last_line(line), m_function(function) {}
 
-            void set_last_line(std::size_t line) { if(line > m_first_line) m_last_line = line; }
+            void set_last_line(std::size_t line)
+            {
+                if(line > m_first_line) m_last_line = line;
+            }
     };
 
     class suite {
@@ -135,13 +200,25 @@ namespace perf
             std::string m_name;
 
         public:
-            suite(const std::string& name = "PerfSuite") : m_name(name) {}
-            suite(const std::vector<std::pair<std::string, perf_func> >& cases, const std::string& name = "PerfSuite") : m_name(name) { for(const auto& c : cases) add_case(c.first, c.second); }
-            suite(const suite& suite) : m_cases(suite.m_cases), m_name(suite.m_name) {}
+            suite(const std::string& name = "PerfSuite") :
+                m_name(name) {}
+            suite(const std::vector<std::pair<std::string, perf_func> >& cases, const std::string& name = "PerfSuite") :
+                m_name(name)
+            {
+                for(const auto& c : cases) add_case(c.first, c.second);
+            }
+            suite(const suite& suite) :
+                m_cases(suite.m_cases), m_name(suite.m_name) {}
 
-            void add_case(const std::string& name, perf_func f) { m_cases.push_back({ f, name, false, duration() }); }
+            void add_case(const std::string& name, perf_func f)
+            {
+                m_cases.push_back({ f, name, false, duration() });
+            }
 
-            void set_name(const std::string& name) { m_name = name; }
+            void set_name(const std::string& name)
+            {
+                m_name = name;
+            }
 
             void run()
             {
@@ -171,10 +248,10 @@ namespace perf
         return o;
     }
 
-     std::ostream& operator<<(std::ostream& o, const suite& suite)
+    std::ostream& operator<<(std::ostream& o, const suite& suite)
     {
         std::string vline = "";
-        fill_string(vline, suite.m_name.length()+7, '=');
+        lengthen_string(vline, suite.m_name.length()+7, '=');
 
         if(suite.m_cases.empty()) {
             o << vline << std::endl;
@@ -193,12 +270,12 @@ namespace perf
         })->time).length();
 
         std::string header_case = "Case", header_success = "Success", header_duration = "Duration", space1 = "", space2 = "", vsubline = "";
-        fill_string(header_case, longest_name);
-        fill_string(header_duration, longest_time);
-        fill_string(space1, 4);
-        fill_string(space2, 4);
-        fill_string(vline, (header_case+space1+header_success+space2+header_duration).length(), '=');
-        fill_string(vsubline, (header_case+space1+header_success+space2+header_duration).length(), '-');
+        lengthen_string(header_case, longest_name);
+        lengthen_string(header_duration, longest_time);
+        lengthen_string(space1, 4);
+        lengthen_string(space2, 4);
+        lengthen_string(vline, (header_case+space1+header_success+space2+header_duration).length(), '=');
+        lengthen_string(vsubline, (header_case+space1+header_success+space2+header_duration).length(), '-');
 
         std::string name, success, duration;
         auto successful = 0ul;
@@ -209,15 +286,15 @@ namespace perf
         o << vsubline << std::endl;
         for(auto c : suite.m_cases) {
             std::string n = c.name, d = format_duration(c.time), s = c.success ? "   1   " : "   0   ";
-            fill_string(n, longest_name);
-            fill_string(d, longest_time);
+            lengthen_string(n, longest_name);
+            lengthen_string(d, longest_time);
             o << n << space1 << s << space2 << d << std::endl;
             if(c.success) successful++;
         }
         o << vsubline << std::endl;
 
         name = "Total:";
-        fill_string(name, longest_name);
+        lengthen_string(name, longest_name);
 
         auto rate = double(successful)/double(suite.m_cases.size());
         rate *= 100.;
@@ -228,12 +305,20 @@ namespace perf
         return o;
     }
 
-    std::ostream* inline_out_ptr() {
+    std::ostream* inline_out_ptr()
+    {
         static std::ostream* inline_out_ptr = &std::cout;
         return inline_out_ptr;
     }
 
-    std::stack<inline_timer>& inline_timer_stack() {
+    std::ostream* auto_out_ptr()
+    {
+        static std::ostream* auto_out_ptr = &std::cout;
+        return auto_out_ptr;
+    }
+
+    std::stack<inline_timer>& inline_timer_stack()
+    {
         static std::stack<inline_timer> inline_timer_stack;
         return inline_timer_stack;
     }
@@ -250,13 +335,14 @@ namespace perf
      perf::inline_timer_stack().pop();
 
 #define PERF_BEGIN(name) \
-    int main() { \
+    int main() \
+    { \
         perf::suite perf_auto_suite; \
         perf_auto_suite.set_name(name);
 
 #define PERF_END() \
         perf_auto_suite.run(); \
-        std::cout << perf_auto_suite << std::endl; \
+        *perf::auto_out_ptr() << perf_auto_suite << std::endl; \
     }
 
 #define PERF_CASE(name, ...) \
@@ -264,17 +350,5 @@ namespace perf
         __VA_ARGS__ \
         return true; \
     });
-
-/* #define PERF_CASE(name ) \ */
-/*     []() */ 
-
-/* #ifdef PERF_AUTO_SUITE */
-/*     int main() { */
-/*          perf::auto_suite().set_name(PERF_AUTO_SUITE); */
-/*          perf::auto_suite().run(); */
-/*          std::cout << perf::auto_suite() << std::endl; */
-/*          return 0; */
-/*      } */
-/* #endif */
 
 #endif
