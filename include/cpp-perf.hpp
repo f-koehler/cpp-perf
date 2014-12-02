@@ -64,15 +64,15 @@ namespace perf
     class suite;
     class inline_timer;
 
-    /*! \brief Format a duration to be human readable.
+    /** @brief Format a duration to be human readable.
      *
      * This function tries the different durations that are available through the
      * standard library. If the duration is longer than one hour the returned
      * string will represent the time rounded to hours. For shorter periods the
      * function will continue with minutes in the same manner.
      *
-     * \parameter time The time duration to format
-     * \return The duration formatted as a string
+     * @parameter time The time duration to format
+     * @return The duration formatted as a string
      */
     std::string format_duration(const duration& time)
     {
@@ -113,16 +113,16 @@ namespace perf
         return strm.str();
     }
 
-    /*! \brief Format code positions.
+    /** @brief Format code positions.
      *
      * The function parameter is optional as not every code position must be in a function.
      * The string will have the following format:
      * file:[function:]line
      *
-     * \parameter file Path to the source file. You can use the __FILE__ macro
-     * \parameter line Line of code in the file. You can use the __LINE__ macro
-     * \parameter function The function containing this position. You can use the __FUNCTION__ macro
-     * \return Code position formatted as a string.
+     * @parameter file Path to the source file. You can use the __FILE__ macro
+     * @parameter line Line of code in the file. You can use the __LINE__ macro
+     * @parameter function The function containing this position. You can use the __FUNCTION__ macro
+     * @return Code position formatted as a string.
      */
     std::string format_code_position(const std::string file, std::size_t line, std::string function = "")
     {
@@ -133,13 +133,13 @@ namespace perf
         return strm.str();
     }
 
-    /*! \brief Append charaters to lengthen a string.
+    /** @brief Append charaters to lengthen a string.
      *
      * The filler character will be appended to the string str until it reaches the length len
      *
-     * \param str The string which should be lengthened.
-     * \param len New length to achieve.
-     * \param filler The character to be used to lengthen the string
+     * @param str The string which should be lengthened.
+     * @param len New length to achieve.
+     * @param filler The character to be used to lengthen the string
      */
     void lengthen_string(std::string& str, std::size_t len, char filler = ' ')
     {
