@@ -12,9 +12,9 @@ Easy inline code measurement
 #include <thread>
 
 int main() {
-    perf::timer t = PERF_TIMER();
-    std::this_thread::sleep_for(perf::milliseconds(50));
-    std::cout << t.stop() << std::endl;
+    PERF_START();
+    std::this_thread::sleep_for(perf::milliseconds(20));
+    PERF_STOP();
 
     return 0;
 }
@@ -22,6 +22,7 @@ int main() {
 
 Output:
 ```
+/home/fabian/code/perf/example/inline.cpp:6:main:   50ms
 ```
 
 

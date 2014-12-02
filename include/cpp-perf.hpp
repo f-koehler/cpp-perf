@@ -6,6 +6,7 @@
 #include <functional>
 #include <ostream>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -195,8 +196,10 @@ namespace perf {
         o << vline << std::endl;
         return o;
     }
-}
 
-#define PERF_TIMER() perf::timer(perf::timer::format_name(__FILE__, __LINE__, __FUNCTION__));
+#define PERF_START() perf::timer inline_timer(perf::timer::format_name(__FILE__, __LINE__, __FUNCTION__));
+#define PERF_STOP() std::cout << inline_timer.stop() << std::endl;
+
+}
 
 #endif
