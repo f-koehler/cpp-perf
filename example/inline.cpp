@@ -1,5 +1,4 @@
 #include <cpp-perf.hpp>
-#include <thread>
 
 int main() {
     PERF_START();

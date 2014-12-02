@@ -5,11 +5,10 @@ A small, header-only performance measurement library for C++11.
 
 
 
-Easy inline code measurement
-----------------------------
+Inline measurement
+------------------
 ``` c++
 #include <cpp-perf.hpp>
-#include <thread>
 
 int main() {
     PERF_START();
@@ -29,8 +28,8 @@ int main() {
 
 Output:
 ```
-/somepath/perf/example/inline.cpp:main:8-12: 200ms
-/somepath/perf/example/inline.cpp:main:5-14: 220ms
+/somepath/perf/example/inline.cpp:main:7-11: 200ms
+/somepath/perf/example/inline.cpp:main:4-13: 220ms
 ```
 
 
@@ -38,9 +37,32 @@ Output:
 Automatic suite
 ---------------
 ``` c++
+#include <cpp-perf.hpp>
+PERF_BEGIN("ExampleModule")
 
+PERF_CASE("example1",
+    std::this_thread::sleep_for(perf::milliseconds(20));
+)
+
+PERF_CASE("example1",
+    for(int i = 0; i < 20; i++) std::this_thread::sleep_for(perf::milliseconds(30));
+)
+
+PERF_END()
 ```
 
+Output:
+```
+===============================
+Name:  ExampleModule
+Case        Success    Duration
+-------------------------------
+example1       1       20ms 
+example1       1       601ms
+-------------------------------
+Total:       1      621ms
+===============================
+```
 
 
 Manual suites
@@ -48,8 +70,6 @@ Manual suites
 
 ``` c++
 #include <cpp-perf.hpp>
-#include <thread>
-using namespace std;
 
 // you can use functions
 bool example2() {
@@ -85,7 +105,7 @@ int main()
     suite.run();
 
     // print results
-    cout << suite << endl;
+    std::cout << suite << std::endl;
 
     return 0;
 }
@@ -99,8 +119,8 @@ Case        Success    Duration
 -------------------------------
 example1       1       40ms  
 example2       1       100ms 
-example3       0       70μs 
-example4       1       869μs
+example3       0       44μs 
+example4       1       855μs
 -------------------------------
 Total:       0.75      141ms
 ===============================

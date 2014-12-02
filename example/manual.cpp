@@ -1,6 +1,4 @@
 #include <cpp-perf.hpp>
-#include <thread>
-using namespace std;
 
 // you can use functions
 bool example2() {
@@ -36,7 +34,7 @@ int main()
     suite.run();
 
     // print results
-    cout << suite << endl;
+    std::cout << suite << std::endl;
 
     return 0;
 }

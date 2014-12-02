@@ -10,7 +10,7 @@
 #include <string>
 #include <stack>
 #include <vector>
-#include <memory>
+#include <thread>
 
 namespace perf
 {
@@ -33,16 +33,6 @@ namespace perf
     class timer;
     class suite;
     class inline_timer;
-
-    std::ostream* inline_out_ptr() {
-        static std::ostream* inline_out_ptr = &std::cout;
-        return inline_out_ptr;
-    }
-
-    std::stack<inline_timer>& inline_timer_stack() {
-        static std::stack<inline_timer> inline_timer_stack;
-        return inline_timer_stack;
-    }
 
     std::string format_duration(const duration& time)
     {
@@ -151,6 +141,8 @@ namespace perf
 
             void add_case(const std::string& name, perf_func f) { m_cases.push_back({ f, name, false, duration() }); }
 
+            void set_name(const std::string& name) { m_name = name; }
+
             void run()
             {
                 clock clk;
@@ -181,6 +173,16 @@ namespace perf
 
      std::ostream& operator<<(std::ostream& o, const suite& suite)
     {
+        std::string vline = "";
+        fill_string(vline, suite.m_name.length()+7, '=');
+
+        if(suite.m_cases.empty()) {
+            o << vline << std::endl;
+            o << "Name:  " << suite.m_name << std::endl;
+            o << "Empty Suite!" << std::endl;
+            o << vline << std::endl;
+        }
+        
         std::string d, n;
 
         auto longest_name = std::max_element(std::begin(suite.m_cases), std::end(suite.m_cases), [](const perf_case& a, const perf_case& b) {
@@ -190,7 +192,7 @@ namespace perf
             return format_duration(a.time).length() < format_duration(b.time).length();
         })->time).length();
 
-        std::string header_case = "Case", header_success = "Success", header_duration = "Duration", space1 = "", space2 = "", vline = "", vsubline = "";
+        std::string header_case = "Case", header_success = "Success", header_duration = "Duration", space1 = "", space2 = "", vsubline = "";
         fill_string(header_case, longest_name);
         fill_string(header_duration, longest_time);
         fill_string(space1, 4);
@@ -226,9 +228,53 @@ namespace perf
         return o;
     }
 
-#define PERF_START() perf::inline_timer_stack().push(perf::inline_timer(__FILE__, __LINE__, __FUNCTION__)); perf::inline_timer_stack().top().start();
-#define PERF_STOP() perf::inline_timer_stack().top().stop(); perf::inline_timer_stack().top().set_last_line(__LINE__); *perf::inline_out_ptr() << perf::inline_timer_stack().top() << std::endl; perf::inline_timer_stack().pop();
+    std::ostream* inline_out_ptr() {
+        static std::ostream* inline_out_ptr = &std::cout;
+        return inline_out_ptr;
+    }
 
+    std::stack<inline_timer>& inline_timer_stack() {
+        static std::stack<inline_timer> inline_timer_stack;
+        return inline_timer_stack;
+    }
 }
+
+#define PERF_START() \
+     perf::inline_timer_stack().push(perf::inline_timer(__FILE__, __LINE__, __FUNCTION__)); \
+     perf::inline_timer_stack().top().start();
+
+#define PERF_STOP() \
+     perf::inline_timer_stack().top().stop(); \
+     perf::inline_timer_stack().top().set_last_line(__LINE__); \
+     *perf::inline_out_ptr() << perf::inline_timer_stack().top() << std::endl; \
+     perf::inline_timer_stack().pop();
+
+#define PERF_BEGIN(name) \
+    int main() { \
+        perf::suite perf_auto_suite; \
+        perf_auto_suite.set_name(name);
+
+#define PERF_END() \
+        perf_auto_suite.run(); \
+        std::cout << perf_auto_suite << std::endl; \
+    }
+
+#define PERF_CASE(name, ...) \
+    perf_auto_suite.add_case(name, []() { \
+        __VA_ARGS__ \
+        return true; \
+    });
+
+/* #define PERF_CASE(name ) \ */
+/*     []() */ 
+
+/* #ifdef PERF_AUTO_SUITE */
+/*     int main() { */
+/*          perf::auto_suite().set_name(PERF_AUTO_SUITE); */
+/*          perf::auto_suite().run(); */
+/*          std::cout << perf::auto_suite() << std::endl; */
+/*          return 0; */
+/*      } */
+/* #endif */
 
 #endif
