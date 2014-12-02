@@ -32,14 +32,15 @@ namespace perf
     };
     class timer;
     class suite;
+    class inline_timer;
 
     std::ostream* inline_out_ptr() {
         static std::ostream* inline_out_ptr = &std::cout;
         return inline_out_ptr;
     }
 
-    std::stack<timer>& inline_timer_stack() {
-        static std::stack<timer> inline_timer_stack;
+    std::stack<inline_timer>& inline_timer_stack() {
+        static std::stack<inline_timer> inline_timer_stack;
         return inline_timer_stack;
     }
 
@@ -91,7 +92,7 @@ namespace perf
         std::stringstream strm;
         strm << file << ":";
         if(!function.empty()) strm << function << ":";
-        strm << line << ":";
+        strm << line;
         return strm.str();
     }
     void fill_string(std::string& str, std::size_t len, char filler = ' ')
@@ -102,28 +103,37 @@ namespace perf
 
     class timer
     {
-        friend std::ostream& operator<<(std::ostream& o, const timer& timer);
-
         private:
             clock m_clock;
             time_point m_start, m_stop;
-            bool m_named;
-            std::string m_name;
 
         public:
-            timer(bool start = true) : m_named(false) { if(start) m_start = m_clock.now(); }
-            timer(const std::string& name, bool start = true) : m_named(true), m_name(name) { if(start) m_start = m_clock.now(); }
+            timer(bool start = true) { if(start) m_start = m_clock.now(); }
 
             void start() {
                 m_start = m_clock.now();
             }
 
-            timer& stop() {
+            void stop() {
                 m_stop = m_clock.now();
-                return *this;
             }
 
-            duration get_duration() { return m_stop-m_start; }
+            duration get_duration() const { return m_stop-m_start; }
+    };
+
+    class inline_timer : public timer
+    {
+        friend std::ostream& operator<<(std::ostream& o, const inline_timer& timer);
+
+        private:
+            std::string m_file;
+            std::size_t m_first_line, m_last_line;
+            std::string m_function;
+
+        public:
+            inline_timer(const std::string& file, const std::size_t line, const std::string& function = "") : m_file(file), m_first_line(line), m_last_line(line), m_function(function) {}
+
+            void set_last_line(std::size_t line) { if(line > m_first_line) m_last_line = line; }
     };
 
     class suite {
@@ -161,10 +171,11 @@ namespace perf
             }
     };
 
-    std::ostream& operator<<(std::ostream& o, const timer& timer)
+    std::ostream& operator<<(std::ostream& o, const inline_timer& timer)
     {
-        if(timer.m_named) o << timer.m_name << "\t";
-        o << format_duration(timer.m_stop-timer.m_start);
+        o << format_code_position(timer.m_file, timer.m_first_line, timer.m_function);
+        if(timer.m_last_line > timer.m_first_line) o << "-" << timer.m_last_line;
+        o << ": " << format_duration(timer.get_duration());
         return o;
     }
 
@@ -215,9 +226,8 @@ namespace perf
         return o;
     }
 
-#define PERF_CODE_POSITION() perf::format_code_position(__FILE__, __LINE__, __FUNCTION__)
-#define PERF_START() perf::inline_timer_stack().push(perf::timer(PERF_CODE_POSITION(), false)); perf::inline_timer_stack().top().start();
-#define PERF_STOP() *perf::inline_out_ptr() << perf::inline_timer_stack().top().stop() << std::endl; perf::inline_timer_stack().pop();
+#define PERF_START() perf::inline_timer_stack().push(perf::inline_timer(__FILE__, __LINE__, __FUNCTION__)); perf::inline_timer_stack().top().start();
+#define PERF_STOP() perf::inline_timer_stack().top().stop(); perf::inline_timer_stack().top().set_last_line(__LINE__); *perf::inline_out_ptr() << perf::inline_timer_stack().top() << std::endl; perf::inline_timer_stack().pop();
 
 }
 
