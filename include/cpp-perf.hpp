@@ -1,7 +1,7 @@
 /**
- * @file
+ * @file cpp-perf.hpp
  * @author Fabian Köhler fabian2804@googlemail.com
- * @version 1.0
+ * @version 0.1
  *
  * @section LICENSE
  *
@@ -44,6 +44,10 @@
 
 namespace perf
 {
+    //===============================================
+    //            Declaration of types
+    //===============================================
+
     typedef std::chrono::high_resolution_clock clock;
     typedef clock::time_point time_point;
     typedef clock::duration duration;
@@ -64,6 +68,13 @@ namespace perf
     class suite;
     class inline_timer;
 
+
+
+
+    //===============================================
+    //             Helper functions
+    //===============================================
+    
     /** @brief Format a duration to be human readable.
      *
      * This function tries the different durations that are available through the
@@ -147,6 +158,12 @@ namespace perf
     }
    
 
+
+
+    //===============================================
+    //             Class definitions
+    //===============================================
+    
     class timer
     {
         private:
@@ -240,6 +257,13 @@ namespace perf
             }
     };
 
+
+
+
+    //===============================================
+    //              ostream operators
+    //===============================================
+    
     std::ostream& operator<<(std::ostream& o, const inline_timer& timer)
     {
         o << format_code_position(timer.m_file, timer.m_first_line, timer.m_function);
@@ -305,6 +329,12 @@ namespace perf
         return o;
     }
 
+
+
+
+    //===============================================
+    //        Wrappers for global variables
+    //===============================================
     std::ostream* inline_out_ptr()
     {
         static std::ostream* inline_out_ptr = &std::cout;
@@ -324,6 +354,12 @@ namespace perf
     }
 }
 
+
+
+
+//===============================================
+//                    Macros
+//===============================================
 #define PERF_START() \
      perf::inline_timer_stack().push(perf::inline_timer(__FILE__, __LINE__, __FUNCTION__)); \
      perf::inline_timer_stack().top().start();
