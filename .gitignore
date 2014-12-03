@@ -1,7 +1,10 @@
 # Created by https://www.gitignore.io
 
-# build directory
+# custom files / directories
 build/*
+doc/html/*
+.ycm_extra_conf.py
+.ycm_extra_conf.pyc
 
 ### vim ###
 [._]*.s[a-w][a-z]
