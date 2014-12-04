@@ -4,9 +4,6 @@ cpp-perf
 A small, header-only performance measurement library for C++11.
 
 
-[![Travis CI](https://travis-ci.org/f-koehler/cpp-perf.svg?branch=master)](https://travis-ci.org/f-koehler/cpp-perf)
-
-
 Inline measurement
 ------------------
 ``` c++
