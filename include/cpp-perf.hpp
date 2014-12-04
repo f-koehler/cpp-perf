@@ -76,15 +76,15 @@ namespace perf
     //===============================================
     
     /**
-     * @brief Format a duration to be human readable.
+     * \brief Format a duration to be human readable.
      *
      * This function tries the different durations that are available through the
      * standard library. If the duration is longer than one hour the returned
      * string will represent the time rounded to hours. For shorter periods the
      * function will continue with minutes in the same manner.
      *
-     * @parameter time The time duration to format
-     * @return The duration formatted as a string
+     * \param time The time duration to format
+     * \return The duration formatted as a string
      */
     std::string format_duration(const duration& time)
     {
@@ -126,16 +126,16 @@ namespace perf
     }
 
     /**
-     * @brief Format code positions.
+     * \brief Format code positions.
      *
      * The function parameter is optional as not every code position must be in a function.
      * The string will have the following format:
      * file:[function:]line
      *
-     * @parameter file Path to the source file. You can use the __FILE__ macro
-     * @parameter line Line of code in the file. You can use the __LINE__ macro
-     * @parameter function The function containing this position. You can use the __FUNCTION__ macro
-     * @return Code position formatted as a string.
+     * \param file Path to the source file. You can use the __FILE__ macro
+     * \param line Line of code in the file. You can use the __LINE__ macro
+     * \param function The function containing this position. You can use the __FUNCTION__ macro
+     * \return Code position formatted as a string.
      */
     std::string format_code_position(const std::string file, std::size_t line, std::string function = "")
     {
@@ -147,13 +147,13 @@ namespace perf
     }
 
     /**
-     * @brief Append charaters to lengthen a string.
+     * \brief Append charaters to lengthen a string.
      *
      * The filler character will be appended to the string str until it reaches the length len
      *
-     * @param str The string which should be lengthened.
-     * @param len New length to achieve.
-     * @param filler The character to be used to lengthen the string
+     * \param str The string which should be lengthened.
+     * \param len New length to achieve.
+     * \param filler The character to be used to lengthen the string
      */
     void lengthen_string(std::string& str, std::size_t len, char filler = ' ')
     {
@@ -168,7 +168,8 @@ namespace perf
     //===============================================
    
     /**
-     * @brief Class to measure times.
+     * \class timer
+     * \brief Class to measure times.
      *
      * This class is used to manually time between the call of the start and stop member functions.
      */
@@ -180,8 +181,8 @@ namespace perf
 
         public:
             /**
-             * @brief Construct a timer object.
-             * @parameter start Decide if the timer should be created and started or only created.
+             * \brief Construct a timer object.
+             * \param start Decide if the timer should be created and started or only created.
              */
             timer(bool start = true)
             {
@@ -189,7 +190,7 @@ namespace perf
             }
 
             /**
-             * @brief This function starts the timer.
+             * \brief This function starts the timer.
              */
             void start()
             {
@@ -197,7 +198,7 @@ namespace perf
             }
 
             /**
-             * @brief This function stops the timer.
+             * \brief This function stops the timer.
              */
             void stop()
             {
@@ -205,8 +206,8 @@ namespace perf
             }
 
             /**
-             * @brief This function returns the time interval between the start and the stop of the timer as a duration.
-             * @return The elapsed time as a duration.
+             * \brief This function returns the time interval between the start and the stop of the timer as a duration.
+             * \return The elapsed time as a duration.
              */
             duration get_duration() const
             {
@@ -215,7 +216,8 @@ namespace perf
     };
 
     /**
-     * @brief Class used for automatic measurement using macros.
+     * \class inline_timer
+     * \brief Class used for automatic measurement using macros.
      *
      * This class is pobably of no use for you. It is used by the PERF_START()
      * and PERF_STOP() macros when using automatic measurement.
@@ -231,17 +233,19 @@ namespace perf
 
         public:
             /**
-             * @brief Constructor used to create inline timers
+             * \brief Constructor used to create inline timers
              *
-             * @parameter file The file where the inline timer is used in.
-             * @parameter line The first line of measurement. This is basically where the timer is created.
-             * @parameter function Optional parameter to indicate the function containing the measurement
+             * \param file The file where the inline timer is used in.
+             * \param line The first line of measurement. This is basically where the timer is created.
+             * \param function Optional parameter to indicate the function containing the measurement
              */
             inline_timer(const std::string& file, const std::size_t line, const std::string& function = "") :
                 m_file(file), m_first_line(line), m_last_line(line), m_function(function) {}
 
             /**
-             * @brief Set the line where the measurement ends
+             * \brief Set the line where the measurement ends
+             *
+             * \param line The number of the last line
              */
             void set_last_line(std::size_t line)
             {
@@ -250,7 +254,7 @@ namespace perf
     };
 
     /**
-     * @brief Class to collect multiple test cases.
+     * \brief Class to collect multiple test cases.
      *
      * Collect multiple test cases which are basically functions, functors or
      * lambdas with the signature bool(void). They can be ran all in order by
@@ -270,22 +274,22 @@ namespace perf
         public:
 
             /**
-             * @brief Constructor to create an empty suite.
+             * \brief Constructor to create an empty suite.
              *
              * This constructor creates a performance suite with a name.
              *
-             * @parameter name The name of the suite. The default is PerfSuite
+             * \param name The name of the suite. The default is PerfSuite
              */
             suite(const std::string& name = "PerfSuite") :
                 m_name(name) {}
 
             /**
-             * @brief Constructor to create a suite with cases.
+             * \brief Constructor to create a suite with cases.
              *
              * This constructor creates a suite and adds all cases given as an argument.
              *
-             * @parameter cases The initial cases of the suite
-             * @parameter name The name of the suite. The default is PerfSuite
+             * \param cases The initial cases of the suite
+             * \param name The name of the suite. The default is PerfSuite
              */
             suite(const std::vector<std::pair<std::string, perf_func> >& cases, const std::string& name = "PerfSuite") :
                 m_name(name)
@@ -294,10 +298,10 @@ namespace perf
             }
 
             /**
-             * @brief Add a case to the suite
+             * \brief Add a case to the suite
              *
-             * @parameter name The name of the case.
-             * @parameter f The function, functor or lambda representing the case.
+             * \param name The name of the case.
+             * \param f The function, functor or lambda representing the case.
              */
             void add_case(const std::string& name, perf_func f)
             {
@@ -305,9 +309,9 @@ namespace perf
             }
 
             /**
-             * @brief Set the name of a suite.
+             * \brief Set the name of a suite.
              *
-             * @parameter name The new name of the suite
+             * \param name The new name of the suite
              */
             void set_name(const std::string& name)
             {
@@ -315,9 +319,9 @@ namespace perf
             }
 
             /**
-             * @brief Get the name of a suite.
+             * \brief Get the name of a suite.
              *
-             * @return The name of the suite
+             * \return The name of the suite
              */
             std::string get_name() const
             {
@@ -325,7 +329,7 @@ namespace perf
             }
 
             /**
-             * @brief Execute all cases of the suite
+             * \brief Execute all cases of the suite
              */
             void run()
             {
