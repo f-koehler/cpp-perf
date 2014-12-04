@@ -9,5 +9,5 @@ function(add_perf_test TEST_NAME TEST_SOURCE)
     add_test(${TEST_NAME} ${TEST_TARGET})
 endfunction()
 
-add_perf_test("core.format_duration" test_format_duration.cpp)
-add_perf_test("core.timer"           test_timer.cpp)
+add_perf_test("core.functions" test_functions.cpp)
+add_perf_test("core.timer"     test_timer.cpp)
