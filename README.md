@@ -36,6 +36,7 @@ If you put ```#ifdef PERF_DISABLE_INLINE``` in front of the include ```#include 
 
 Automatic suite
 ---------------
+
 ``` c++
 #include <cpp-perf.hpp>
 PERF_BEGIN("ExampleModule")
@@ -53,15 +54,8 @@ PERF_END()
 
 Output:
 ```
-===============================
-Name:  ExampleModule
-Case        Success    Duration
--------------------------------
-example1       1       20ms 
-example1       1       601ms
--------------------------------
-Total:       1      621ms
-===============================
+1/2 Case #1: example1 .....................  Passed  20 ms
+2/2 Case #2: example2 .....................  Passed  601 ms
 ```
 
 
@@ -113,15 +107,8 @@ int main()
 
 Output:
 ```
-===============================
-Name:  PerfSuite
-Case        Success    Duration
--------------------------------
-example1       1       40ms  
-example2       1       100ms 
-example3       0       44μs 
-example4       1       855μs
--------------------------------
-Total:       0.75      141ms
-===============================
+1/4 Case #1: example1 .....................  Passed  40 ms
+2/4 Case #2: example2 .....................  Passed  100 ms
+3/4 Case #3: example3 .....................  Failed  61 μs
+4/4 Case #4: example4 .....................  Passed  859 μs
 ```

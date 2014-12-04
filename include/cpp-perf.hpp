@@ -157,7 +157,7 @@ namespace perf
      */
     void lengthen_string(std::string& str, std::size_t len, char filler = ' ')
     {
-        while(str.length() < len) str += filler;
+        while(str.size() < len) str += filler;
     }
    
 
@@ -370,58 +370,32 @@ namespace perf
 
     std::ostream& operator<<(std::ostream& o, const suite& suite)
     {
-        std::string vline = "";
-        lengthen_string(vline, suite.m_name.length()+7, '=');
+        auto num_cases = suite.m_cases.size();
+        auto num_cases_str = std::to_string(num_cases);
 
-        if(suite.m_cases.empty()) {
-            o << vline << std::endl;
-            o << "Name:  " << suite.m_name << std::endl;
-            o << "Empty Suite!" << std::endl;
-            o << vline << std::endl;
-        }
-        
-        std::string d, n;
+        auto max_name_length   = std::max_element(std::begin(suite.m_cases), std::end(suite.m_cases), [](const perf_case& a, const perf_case& b) {
+            return a.name.size() < b.name.size();
+        })->name.size();
 
-        auto longest_name = std::max_element(std::begin(suite.m_cases), std::end(suite.m_cases), [](const perf_case& a, const perf_case& b) {
-            return a.name.length() < b.name.length();
-        })->name.length();
-        auto longest_time = format_duration(std::max_element(std::begin(suite.m_cases), std::end(suite.m_cases), [](const perf_case& a, const perf_case& b) {
-            return format_duration(a.time).length() < format_duration(b.time).length();
-        })->time).length();
-
-        std::string header_case = "Case", header_success = "Success", header_duration = "Duration", space1 = "", space2 = "", vsubline = "";
-        lengthen_string(header_case, longest_name);
-        lengthen_string(header_duration, longest_time);
-        lengthen_string(space1, 4);
-        lengthen_string(space2, 4);
-        lengthen_string(vline, (header_case+space1+header_success+space2+header_duration).length(), '=');
-        lengthen_string(vsubline, (header_case+space1+header_success+space2+header_duration).length(), '-');
-
-        std::string name, success, duration;
-        auto successful = 0ul;
-
-        o << vline << std::endl;
-        o << "Name:  " << suite.m_name << std::endl;
-        o << header_case << space1 << header_success << space2 << header_duration << std::endl;
-        o << vsubline << std::endl;
+        auto num = 0ul;
+        auto num_str = std::string(), name_str = std::string(), success_str = std::string(), time_str = std::string();
         for(auto c : suite.m_cases) {
-            std::string n = c.name, d = format_duration(c.time), s = c.success ? "   1   " : "   0   ";
-            lengthen_string(n, longest_name);
-            lengthen_string(d, longest_time);
-            o << n << space1 << s << space2 << d << std::endl;
-            if(c.success) successful++;
+            num++;
+            num_str = std::to_string(num);
+            lengthen_string(num_str, num_cases_str.length());
+            name_str = c.name + ' ';
+            if(30 > max_name_length+1) {
+                lengthen_string(name_str, 30, '.');
+            } else {
+                lengthen_string(name_str, max_name_length+1, '.');
+            }
+            if(c.success) success_str = "  Passed  ";
+            else success_str = "  Failed  ";
+            time_str = format_duration(c.time);
+
+            o << num_str << '/' << num_cases_str << ' ' << "Case #" << num_str << ": " << name_str << success_str << time_str << std::endl;
         }
-        o << vsubline << std::endl;
 
-        name = "Total:";
-        lengthen_string(name, longest_name);
-
-        auto rate = double(successful)/double(suite.m_cases.size());
-        rate *= 100.;
-        rate = std::round(rate) / 100.;
-
-        o << name << space1 << " " << rate << "  " << space2 << format_duration(suite.m_total_time) << std::endl;
-        o << vline << std::endl;
         return o;
     }
 
