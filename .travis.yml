@@ -1,15 +1,22 @@
 language: cpp
 compiler:
     - gcc
+    - clang
 before_install:
-    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+    - if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+    - if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+
+    - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
+    - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.4; fi
+    - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.4"; fi
+
     - sudo apt-get update -qq
     - sudo apt-get install -qq libboost-test1.48-dev
-    - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+      
 script:
     - mkdir -p build
     - cd build
-    - cmake -DPERF_TESTS=ON -DPERF_EXAMPLES=ON -DPERF_OLD_COMP=ON ..
+    - cmake -DPERF_TESTS=ON -DPERF_EXAMPLES=ON ..
     - make -j8
     - ctest --output-on-failure
