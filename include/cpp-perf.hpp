@@ -83,7 +83,7 @@ namespace perf
      * string will represent the time rounded to hours. For shorter periods the
      * function will continue with minutes in the same manner.
      *
-     * \param time The time duration to format
+     * \param[in] time The time duration to format
      * \return The duration formatted as a string
      */
     std::string format_duration(const duration& time)
@@ -132,12 +132,12 @@ namespace perf
      * The string will have the following format:
      * file:[function:]line
      *
-     * \param file Path to the source file. You can use the __FILE__ macro
-     * \param line Line of code in the file. You can use the __LINE__ macro
-     * \param function The function containing this position. You can use the __FUNCTION__ macro
+     * \param[in] file Path to the source file. You can use the __FILE__ macro
+     * \param[in] line Line of code in the file. You can use the __LINE__ macro
+     * \param[in] function The function containing this position. You can use the __FUNCTION__ macro
      * \return Code position formatted as a string.
      */
-    std::string format_code_position(const std::string file, std::size_t line, std::string function = "")
+    std::string format_code_position(const std::string& file, std::size_t line, const std::string& function = "")
     {
         std::stringstream strm;
         strm << file << ":";
@@ -151,9 +151,9 @@ namespace perf
      *
      * The filler character will be appended to the string str until it reaches the length len
      *
-     * \param str The string which should be lengthened.
-     * \param len New length to achieve.
-     * \param filler The character to be used to lengthen the string
+     * \param[in,out] str The string which should be lengthened.
+     * \param[in] len New length to achieve.
+     * \param[in] filler The character to be used to lengthen the string
      */
     void lengthen_string(std::string& str, std::size_t len, char filler = ' ')
     {
@@ -182,7 +182,7 @@ namespace perf
         public:
             /**
              * \brief Construct a timer object.
-             * \param start Decide if the timer should be created and started or only created.
+             * \param[in] start Decide if the timer should be created and started or only created.
              */
             timer(bool start = true)
             {
@@ -235,17 +235,17 @@ namespace perf
             /**
              * \brief Constructor used to create inline timers
              *
-             * \param file The file where the inline timer is used in.
-             * \param line The first line of measurement. This is basically where the timer is created.
-             * \param function Optional parameter to indicate the function containing the measurement
+             * \param[in] file The file where the inline timer is used in.
+             * \param[in] line The first line of measurement. This is basically where the timer is created.
+             * \param[in] function Optional parameter to indicate the function containing the measurement
              */
-            inline_timer(const std::string& file, const std::size_t line, const std::string& function = "") :
+            inline_timer(const std::string& file, std::size_t line, const std::string& function = "") :
                 m_file(file), m_first_line(line), m_last_line(line), m_function(function) {}
 
             /**
              * \brief Set the line where the measurement ends
              *
-             * \param line The number of the last line
+             * \param[in] line The number of the last line
              */
             void set_last_line(std::size_t line)
             {
@@ -278,7 +278,7 @@ namespace perf
              *
              * This constructor creates a performance suite with a name.
              *
-             * \param name The name of the suite. The default is PerfSuite
+             * \param[in] name The name of the suite. The default is PerfSuite
              */
             suite(const std::string& name = "PerfSuite") :
                 m_name(name) {}
@@ -288,8 +288,8 @@ namespace perf
              *
              * This constructor creates a suite and adds all cases given as an argument.
              *
-             * \param cases The initial cases of the suite
-             * \param name The name of the suite. The default is PerfSuite
+             * \param[in] cases The initial cases of the suite
+             * \param[in] name The name of the suite. The default is PerfSuite
              */
             suite(const std::vector<std::pair<std::string, perf_func> >& cases, const std::string& name = "PerfSuite") :
                 m_name(name)
@@ -300,8 +300,8 @@ namespace perf
             /**
              * \brief Add a case to the suite
              *
-             * \param name The name of the case.
-             * \param f The function, functor or lambda representing the case.
+             * \param[in] name The name of the case.
+             * \param[in] f The function, functor or lambda representing the case.
              */
             void add_case(const std::string& name, perf_func f)
             {
@@ -311,7 +311,7 @@ namespace perf
             /**
              * \brief Set the name of a suite.
              *
-             * \param name The new name of the suite
+             * \param[in] name The new name of the suite
              */
             void set_name(const std::string& name)
             {
@@ -357,7 +357,17 @@ namespace perf
     //===============================================
     //              ostream operators
     //===============================================
-   
+  
+    /**
+     * \brief Write a timer to an ostream.
+     *
+     * This operator writes a time to an ostream and formats the time using
+     * the format_duration() function
+     *
+     * \param[in,out] o The ostream to use
+     * \param[in] t The timer to output
+     * \return Returns the ostream o
+     */
     std::ostream& operator<<(std::ostream& o, const timer& t)
     {
         o << format_duration(t.get_duration());
@@ -409,6 +419,15 @@ namespace perf
     //===============================================
     //        Wrappers for global variables
     //===============================================
+    
+    /**
+     * \brief Return the ostream that are used for inline_timers
+     *
+     * This returns the a pointer to the ostream that will be used when PERF_STOP
+     * prints out a inline_timer. This function can be used to redirect the output.
+     *
+     * \return Pointer to the std::ostream
+     */
     std::ostream* inline_out_ptr()
     {
         static std::ostream* inline_out_ptr = &std::cout;
@@ -421,6 +440,13 @@ namespace perf
         return auto_out_ptr;
     }
 
+    /**
+     * \brief Implements a global inline_timer stack.
+     *
+     * This function returns a reference to a static stack of inline_timers.
+     *
+     * \return A reference to the stack of inline_timers
+     */
     std::stack<inline_timer>& inline_timer_stack()
     {
         static std::stack<inline_timer> inline_timer_stack;
