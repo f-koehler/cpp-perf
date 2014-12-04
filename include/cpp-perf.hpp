@@ -75,7 +75,8 @@ namespace perf
     //             Helper functions
     //===============================================
     
-    /** @brief Format a duration to be human readable.
+    /**
+     * @brief Format a duration to be human readable.
      *
      * This function tries the different durations that are available through the
      * standard library. If the duration is longer than one hour the returned
@@ -90,41 +91,42 @@ namespace perf
         std::stringstream strm;
 
         auto h = std::chrono::duration_cast<hours>(time);
-        if(h.count() > 1.) {
-            strm << h.count() << "h";
+        if(h.count() >= 1.) {
+            strm << h.count() << " h";
             return strm.str();
         }
 
         auto m = std::chrono::duration_cast<minutes>(time);
-        if(m.count() > 1.) {
-            strm << m.count() << "m";
+        if(m.count() >= 1.) {
+            strm << m.count() << " min";
             return strm.str();
         }
 
         auto s = std::chrono::duration_cast<seconds>(time);
-        if(s.count() > 1.) {
-            strm << s.count() << "s";
+        if(s.count() >= 1.) {
+            strm << s.count() << " s";
             return strm.str();
         }
 
         auto ms = std::chrono::duration_cast<milliseconds>(time);
-        if(ms.count() > 1.) {
-            strm << ms.count() << "ms";
+        if(ms.count() >= 1.) {
+            strm << ms.count() << " ms";
             return strm.str();
         }
 
         auto mus = std::chrono::duration_cast<microseconds>(time);
-        if(mus.count() > 1.) {
-            strm << mus.count() << "\u03BCs";
+        if(mus.count() >= 1.) {
+            strm << mus.count() << " \u03BCs";
             return strm.str();
         }
     
         auto ns = std::chrono::duration_cast<nanoseconds>(time);
-        strm << ns.count() << "ns";
+        strm << ns.count() << " ns";
         return strm.str();
     }
 
-    /** @brief Format code positions.
+    /**
+     * @brief Format code positions.
      *
      * The function parameter is optional as not every code position must be in a function.
      * The string will have the following format:
@@ -144,7 +146,8 @@ namespace perf
         return strm.str();
     }
 
-    /** @brief Append charaters to lengthen a string.
+    /**
+     * @brief Append charaters to lengthen a string.
      *
      * The filler character will be appended to the string str until it reaches the length len
      *
@@ -163,7 +166,12 @@ namespace perf
     //===============================================
     //             Class definitions
     //===============================================
-    
+   
+    /**
+     * @brief Class to measure times.
+     *
+     * This class is used to manually time between the call of the start and stop member functions.
+     */
     class timer
     {
         private:
@@ -171,24 +179,47 @@ namespace perf
             time_point m_start, m_stop;
 
         public:
+            /**
+             * @brief Construct a timer object.
+             * @parameter start Decide if the timer should be created and started or only created.
+             */
             timer(bool start = true)
             {
                 if(start) m_start = m_clock.now();
             }
 
+            /**
+             * @brief This function starts the timer.
+             */
             void start()
             {
                 m_start = m_clock.now();
             }
 
+            /**
+             * @brief This function stops the timer.
+             */
             void stop()
             {
                 m_stop = m_clock.now();
             }
 
-            duration get_duration() const { return m_stop-m_start; }
+            /**
+             * @brief This function returns the time interval between the start and the stop of the timer as a duration.
+             * @return The elapsed time as a duration.
+             */
+            duration get_duration() const
+            {
+                return m_stop-m_start;
+            }
     };
 
+    /**
+     * @brief Class used for automatic measurement using macros.
+     *
+     * This class is pobably of no use for you. It is used by the PERF_START()
+     * and PERF_STOP() macros when using automatic measurement.
+     */
     class inline_timer : public timer
     {
         friend std::ostream& operator<<(std::ostream& o, const inline_timer& timer);
@@ -199,15 +230,35 @@ namespace perf
             std::string m_function;
 
         public:
+            /**
+             * @brief Constructor used to create inline timers
+             *
+             * @parameter file The file where the inline timer is used in.
+             * @parameter line The first line of measurement. This is basically where the timer is created.
+             * @parameter function Optional parameter to indicate the function containing the measurement
+             */
             inline_timer(const std::string& file, const std::size_t line, const std::string& function = "") :
                 m_file(file), m_first_line(line), m_last_line(line), m_function(function) {}
 
+            /**
+             * @brief Set the line where the measurement ends
+             */
             void set_last_line(std::size_t line)
             {
                 if(line > m_first_line) m_last_line = line;
             }
     };
 
+    /**
+     * @brief Class to collect multiple test cases.
+     *
+     * Collect multiple test cases which are basically functions, functors or
+     * lambdas with the signature bool(void). They can be ran all in order by
+     * just one command. Exceptions will be caught and the observables success
+     * and runtime are logged.
+     *
+     * An ostream operator helps you printing results out in a readable way.
+     */
     class suite {
         friend std::ostream& operator<<(std::ostream& o, const suite& suite);
 
@@ -217,26 +268,65 @@ namespace perf
             std::string m_name;
 
         public:
+
+            /**
+             * @brief Constructor to create an empty suite.
+             *
+             * This constructor creates a performance suite with a name.
+             *
+             * @parameter name The name of the suite. The default is PerfSuite
+             */
             suite(const std::string& name = "PerfSuite") :
                 m_name(name) {}
+
+            /**
+             * @brief Constructor to create a suite with cases.
+             *
+             * This constructor creates a suite and adds all cases given as an argument.
+             *
+             * @parameter cases The initial cases of the suite
+             * @parameter name The name of the suite. The default is PerfSuite
+             */
             suite(const std::vector<std::pair<std::string, perf_func> >& cases, const std::string& name = "PerfSuite") :
                 m_name(name)
             {
                 for(const auto& c : cases) add_case(c.first, c.second);
             }
-            suite(const suite& suite) :
-                m_cases(suite.m_cases), m_name(suite.m_name) {}
 
+            /**
+             * @brief Add a case to the suite
+             *
+             * @parameter name The name of the case.
+             * @parameter f The function, functor or lambda representing the case.
+             */
             void add_case(const std::string& name, perf_func f)
             {
                 m_cases.push_back({ f, name, false, duration() });
             }
 
+            /**
+             * @brief Set the name of a suite.
+             *
+             * @parameter name The new name of the suite
+             */
             void set_name(const std::string& name)
             {
                 m_name = name;
             }
 
+            /**
+             * @brief Get the name of a suite.
+             *
+             * @return The name of the suite
+             */
+            std::string get_name() const
+            {
+                return m_name;
+            }
+
+            /**
+             * @brief Execute all cases of the suite
+             */
             void run()
             {
                 clock clk;
@@ -263,7 +353,13 @@ namespace perf
     //===============================================
     //              ostream operators
     //===============================================
-    
+   
+    std::ostream& operator<<(std::ostream& o, const timer& t)
+    {
+        o << format_duration(t.get_duration());
+        return o;
+    }
+
     std::ostream& operator<<(std::ostream& o, const inline_timer& timer)
     {
         o << format_code_position(timer.m_file, timer.m_first_line, timer.m_function);
