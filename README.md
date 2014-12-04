@@ -31,7 +31,7 @@ Output:
 /somepath/perf/example/inline.cpp:main:7-11: 200ms
 /somepath/perf/example/inline.cpp:main:4-13: 220ms
 ```
-
+If you put ```#ifdef PERF_DISABLE_INLINE``` in front of the include ```#include <cpp-perf.hpp>``` there will no measurement be performed. The macros are actually expanded int empty lines so that your code is the same as if you would not have put them there.
 
 
 Automatic suite

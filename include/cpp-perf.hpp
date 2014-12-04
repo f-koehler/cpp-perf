@@ -456,6 +456,13 @@ namespace perf
 //===============================================
 //                    Macros
 //===============================================
+#ifdef PERF_DISABLE_INLINE
+
+#define PERF_START()
+#define PERF_STOP()
+
+#else
+
 #define PERF_START() \
      perf::inline_timer_stack().push(perf::inline_timer(__FILE__, __LINE__, __FUNCTION__)); \
      perf::inline_timer_stack().top().start();
@@ -466,11 +473,14 @@ namespace perf
      *perf::inline_out_ptr() << perf::inline_timer_stack().top() << std::endl; \
      perf::inline_timer_stack().pop();
 
+#endif
+
 #define PERF_BEGIN(name) \
     int main() \
     { \
         perf::suite perf_auto_suite; \
         perf_auto_suite.set_name(name);
+
 
 #define PERF_END() \
         perf_auto_suite.run(); \
