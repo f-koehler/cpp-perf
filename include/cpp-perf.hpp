@@ -48,22 +48,78 @@ namespace perf
     //            Declaration of types
     //===============================================
 
+    /**
+     * \typedef clock
+     * \brief Typedef for a high resolution clock 
+     */
     typedef std::chrono::high_resolution_clock clock;
+
+    /**
+     * \typedef time_point
+     * \brief Typedef for the timepoint type of the high_resolution_clock
+     */
     typedef clock::time_point time_point;
+
+    /**
+     * \typedef duration
+     * \brief Typedef for the duration type of the high_resolution_clock
+     */
     typedef clock::duration duration;
+
+    /**
+     * \typedef hours
+     * \brief Typedef for the standard hours type
+     */
     typedef std::chrono::hours hours;
+
+    /**
+     * \typedef minutes
+     * \brief Typedef for the standard minutes type
+     */
     typedef std::chrono::minutes minutes;
+
+    /**
+     * \typedef seconds
+     * \brief Typedef for the standard seconds type
+     */
     typedef std::chrono::seconds seconds;
+    
+    /**
+     * \typedef milliseconds
+     * \brief Typedef for the standard milliseconds type
+     */
     typedef std::chrono::milliseconds milliseconds;
+
+    /**
+     * \typedef microseconds
+     * \brief Typedef for the standard microseconds type
+     */
     typedef std::chrono::microseconds microseconds;
+
+    /**
+     * \typedef nanosecodns
+     * \brief Typedef for the standard nanoseconds type
+     */
     typedef std::chrono::nanoseconds nanoseconds;
+
+    /**
+     * \typedef perf_func
+     * \brief Define what a function for performance measurment is
+     */
     typedef std::function<bool(void)> perf_func;
+
+    /**
+     * \struct perf_case
+     * \brief A measurement case for suites
+     */
     struct perf_case {
         perf_func f;
         std::string name;
         bool success;
         duration time;
     };
+
+    // Forward declarations of classes
     class timer;
     class suite;
     class inline_timer;
@@ -421,9 +477,9 @@ namespace perf
     //===============================================
     
     /**
-     * \brief Return the ostream that are used for inline_timers
+     * \brief Return the ostream that is used for inline_timers
      *
-     * This returns the a pointer to the ostream that will be used when PERF_STOP
+     * This function returns the a pointer to the ostream that is used when PERF_STOP
      * prints out a inline_timer. This function can be used to redirect the output.
      *
      * \return Pointer to the std::ostream
@@ -434,6 +490,14 @@ namespace perf
         return inline_out_ptr;
     }
 
+    /**
+     * \brief Return the ostream that is used for automatic performance suites
+     *
+     * This function returns a pointer to the std::ostream that is used when
+     * PERF_END prints out the reults of an automatic performance suite
+     *
+     * \return Pointer to the std::ostream
+     */
     std::ostream* auto_out_ptr()
     {
         static std::ostream* auto_out_ptr = &std::cout;
