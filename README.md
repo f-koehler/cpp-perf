@@ -4,6 +4,26 @@ cpp-perf
 A small, header-only performance measurement library for C++11.
 
 
+Most basic usage
+----------------
+``` c++
+#include <cpp-perf.hpp>
+
+int main()
+{
+    perf::start();
+    std::this_thread::sleep_for(perf::milliseconds(20));
+    perf::stop();
+
+    return 0;
+}
+```
+
+Output:
+```
+20 ms
+```
+
 Inline measurement
 ------------------
 ``` c++

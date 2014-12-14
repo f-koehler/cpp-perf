@@ -215,7 +215,6 @@ namespace perf
     {
         while(str.size() < len) str += filler;
     }
-   
 
 
 
@@ -505,6 +504,19 @@ namespace perf
     }
 
     /**
+     * \brief Implements a global timer stack.
+     *
+     * This function returs a reference to a static stack of timers.
+     *
+     * \return A reference to the stack of timers.
+     */
+    std::stack<timer>& timer_stack()
+    {
+        static std::stack<timer> timer_stack;
+        return timer_stack;
+    }
+
+    /**
      * \brief Implements a global inline_timer stack.
      *
      * This function returns a reference to a static stack of inline_timers.
@@ -516,6 +528,30 @@ namespace perf
         static std::stack<inline_timer> inline_timer_stack;
         return inline_timer_stack;
     }
+
+    /**
+     * \brief Creates a new timer for quick and easy measurement.
+     *
+     * This function creates a new basic timer which on the timer stack and starts it.
+     */
+    void start()
+    {
+        timer_stack().push(timer());
+    }
+    
+    /**
+     * \brief Stops the last timer on the stack and prints the measured time.
+     *
+     * This function stops the last timer on the stack and prints the result on
+     * the inline out ostream.
+     */
+    void stop()
+    {
+        timer_stack().top().stop();
+        *inline_out_ptr() << timer_stack().top() << std::endl;
+        timer_stack().pop();
+    }
+
 }
 
 
