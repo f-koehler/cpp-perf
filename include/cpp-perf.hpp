@@ -277,11 +277,13 @@ namespace perf
      * This class is pobably of no use for you. It is used by the PERF_START()
      * and PERF_STOP() macros when using automatic measurement.
      */
-    class inline_timer : public timer
+    class inline_timer
     {
         friend std::ostream& operator<<(std::ostream& o, const inline_timer& timer);
 
         private:
+            clock m_clock;
+            time_point m_start, m_stop;
             std::string m_file;
             std::size_t m_first_line, m_last_line;
             std::string m_function;
@@ -298,6 +300,22 @@ namespace perf
                 m_file(file), m_first_line(line), m_last_line(line), m_function(function) {}
 
             /**
+             * \brief This function starts the timer.
+             */
+            void start()
+            {
+                m_start = m_clock.now();
+            }
+
+            /**
+             * \brief This function stops the timer.
+             */
+            void stop()
+            {
+                m_stop = m_clock.now();
+            }
+
+            /**
              * \brief Set the line where the measurement ends
              *
              * \param[in] line The number of the last line
@@ -305,6 +323,15 @@ namespace perf
             void set_last_line(std::size_t line)
             {
                 if(line > m_first_line) m_last_line = line;
+            }
+            
+            /**
+             * \brief This function returns the time interval between the start and the stop of the timer as a duration.
+             * \return The elapsed time as a duration.
+             */
+            duration get_duration() const
+            {
+                return m_stop-m_start;
             }
     };
 
