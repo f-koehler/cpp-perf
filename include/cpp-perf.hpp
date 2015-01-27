@@ -159,7 +159,7 @@ namespace perf
         }
 
         auto s = std::chrono::duration_cast<seconds>(time);
-        if(s.count() >= 1.) {
+        if(s.count() >= 10.) {
             strm << s.count() << " s";
             return strm.str();
         }
