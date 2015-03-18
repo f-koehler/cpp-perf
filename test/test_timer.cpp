@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE(constructor_paused)
     std::ostringstream strm;
     strm << t;
 
-    BOOST_CHECK_EQUAL(strm.str(), "1 s");
+    BOOST_CHECK_EQUAL(strm.str(), "1000 ms");
 }
 
 BOOST_AUTO_TEST_CASE(start_stop)

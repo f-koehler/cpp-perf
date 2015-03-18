@@ -19,9 +19,9 @@ BOOST_AUTO_TEST_CASE(minutes)
 
 BOOST_AUTO_TEST_CASE(seconds)
 {
-    BOOST_CHECK_EQUAL(perf::format_duration(perf::seconds(1)), "1 s");
-    BOOST_CHECK_EQUAL(perf::format_duration(perf::milliseconds(1000)), "1 s");
-    BOOST_CHECK_EQUAL(perf::format_duration(perf::milliseconds(2000)), "2 s");
+    BOOST_CHECK_EQUAL(perf::format_duration(perf::seconds(10)), "10 s");
+    BOOST_CHECK_EQUAL(perf::format_duration(perf::milliseconds(10000)), "10 s");
+    BOOST_CHECK_EQUAL(perf::format_duration(perf::milliseconds(20000)), "20 s");
 }
 
 BOOST_AUTO_TEST_CASE(milliseconds)
