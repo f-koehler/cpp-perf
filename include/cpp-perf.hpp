@@ -48,65 +48,16 @@ namespace perf
     //            Declaration of types
     //===============================================
 
-    /**
-     * \typedef clock
-     * \brief Typedef for a high resolution clock 
-     */
-    typedef std::chrono::high_resolution_clock clock;
-
-    /**
-     * \typedef time_point
-     * \brief Typedef for the timepoint type of the high_resolution_clock
-     */
-    typedef clock::time_point time_point;
-
-    /**
-     * \typedef duration
-     * \brief Typedef for the duration type of the high_resolution_clock
-     */
-    typedef clock::duration duration;
-
-    /**
-     * \typedef hours
-     * \brief Typedef for the standard hours type
-     */
-    typedef std::chrono::hours hours;
-
-    /**
-     * \typedef minutes
-     * \brief Typedef for the standard minutes type
-     */
-    typedef std::chrono::minutes minutes;
-
-    /**
-     * \typedef seconds
-     * \brief Typedef for the standard seconds type
-     */
-    typedef std::chrono::seconds seconds;
-    
-    /**
-     * \typedef milliseconds
-     * \brief Typedef for the standard milliseconds type
-     */
-    typedef std::chrono::milliseconds milliseconds;
-
-    /**
-     * \typedef microseconds
-     * \brief Typedef for the standard microseconds type
-     */
-    typedef std::chrono::microseconds microseconds;
-
-    /**
-     * \typedef nanosecodns
-     * \brief Typedef for the standard nanoseconds type
-     */
-    typedef std::chrono::nanoseconds nanoseconds;
-
-    /**
-     * \typedef perf_func
-     * \brief Define what a function for performance measurment is
-     */
-    typedef std::function<bool(void)> perf_func;
+    using clock = std::chrono::high_resolution_clock;
+    using time_point = clock::time_point;
+    using duration = clock::duration;
+    using hours = std::chrono::hours;
+    using minutes = std::chrono::minutes;
+    using seconds = std::chrono::seconds;
+    using milliseconds = std::chrono::milliseconds;
+    using microseconds = std::chrono::microseconds;
+    using nanoseconds = std::chrono::nanoseconds;
+    using perf_func = std::function<bool(void)>;
 
     /**
      * \struct perf_case
@@ -264,7 +215,7 @@ namespace perf
              * \brief This function returns the time interval between the start and the stop of the timer as a duration.
              * \return The elapsed time as a duration.
              */
-            duration get_duration() const
+            duration duration() const
             {
                 return m_stop-m_start;
             }
@@ -329,7 +280,7 @@ namespace perf
              * \brief This function returns the time interval between the start and the stop of the timer as a duration.
              * \return The elapsed time as a duration.
              */
-            duration get_duration() const
+            duration duration() const
             {
                 return m_stop-m_start;
             }
@@ -452,7 +403,7 @@ namespace perf
      */
     std::ostream& operator<<(std::ostream& o, const timer& t)
     {
-        o << format_duration(t.get_duration());
+        o << format_duration(t.duration());
         return o;
     }
 
@@ -460,7 +411,7 @@ namespace perf
     {
         o << format_code_position(timer.m_file, timer.m_first_line, timer.m_function);
         if(timer.m_last_line > timer.m_first_line) o << "-" << timer.m_last_line;
-        o << ": " << format_duration(timer.get_duration());
+        o << ": " << format_duration(timer.duration());
         return o;
     }
 
