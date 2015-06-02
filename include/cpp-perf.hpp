@@ -247,8 +247,8 @@ namespace perf
              * \param[in] line The first line of measurement. This is basically where the timer is created.
              * \param[in] function Optional parameter to indicate the function containing the measurement
              */
-            inline_timer(const std::string& file, std::size_t line, const std::string& function = "") :
-                m_file(file), m_first_line(line), m_last_line(line), m_function(function) {}
+            inline_timer(std::string  file, std::size_t line, std::string  function = "") :
+                m_file(std::move(file)), m_first_line(line), m_last_line(line), m_function(std::move(function)) {}
 
             /**
              * \brief This function starts the timer.
@@ -313,8 +313,8 @@ namespace perf
              *
              * \param[in] name The name of the suite. The default is PerfSuite
              */
-            suite(const std::string& name = "PerfSuite") :
-                m_name(name) {}
+            suite(std::string  name = "PerfSuite") :
+                m_name(std::move(name)) {}
 
             /**
              * \brief Constructor to create a suite with cases.
@@ -324,8 +324,8 @@ namespace perf
              * \param[in] cases The initial cases of the suite
              * \param[in] name The name of the suite. The default is PerfSuite
              */
-            suite(const std::vector<std::pair<std::string, perf_func> >& cases, const std::string& name = "PerfSuite") :
-                m_name(name)
+            suite(const std::vector<std::pair<std::string, perf_func> >& cases, std::string  name = "PerfSuite") :
+                m_name(std::move(name))
             {
                 for(const auto& c : cases) add_case(c.first, c.second);
             }
