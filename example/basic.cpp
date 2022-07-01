@@ -1,6 +1,6 @@
 /**
  * @file basic.cpp
- * @author Fabian Köhler fabian2804@googlemail.com
+ * @author Fabian Köhler fabian.koehler@protonmail.ch
  * @version 0.1
  *
  * @section LICENSE
