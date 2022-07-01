@@ -1,21 +1,39 @@
-cmake_minimum_required(VERSION 2.8)
-project(primefac)
+cmake_minimum_required(VERSION 3.10)
+project(cppperf LANGUAGES CXX)
+
+set(CMAKE_CXX_STAND 11)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# check if IPO is supported
+include(CheckIPOSupported)
+check_ipo_supported(RESULT result OUTPUT output)
+
+if(NOT result)
+    message(WARNING "IPO is not supported: ${output}")
+endif()
 
 # options
-option(PERF_TESTS    "Enable compilation of unit tests"  OFF)
-option(PERF_EXAMPLES "Enable compilation of examples"    ON)
+option(CPPPERF_TESTS "Enable compilation of unit tests" ON)
+option(CPPPERF_EXAMPLES "Enable compilation of examples" ON)
 
-# enable warnings
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    add_definitions(-Wall -Wextra -pedantic)
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    add_definitions(/W4 /WX /EHsc)
-endif()
+# macro to enable warnings
+macro(cppperf_enable_warnings target)
+    target_compile_options(${target} PRIVATE
+        $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-Wall -Wextra -Wconversion -Wsign-conversion -pedantic -Werror -pedantic-errors>
+    )
+endmacro()
 
-# enable c++11 features
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    add_definitions(-std=c++11)
-endif()
+# macro to add executable
+macro(cppperf_add_executable target sources)
+    add_executable(${target} ${sources})
+
+    # cppperf_enable_warnings(${target})
+    target_compile_options(${target} PRIVATE
+        $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-O>
+    )
+endmacro()
 
 include_directories(include)
 
