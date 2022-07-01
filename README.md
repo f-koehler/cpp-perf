@@ -1,11 +1,13 @@
-cpp-perf
-========
+# cpp-perf
+
+[![CI](https://github.com/f-koehler/cpp-perf/actions/workflows/ci.yml/badge.svg)](https://github.com/f-koehler/cpp-perf/actions/workflows/ci.yml)
+[![GitHub](https://img.shields.io/github/license/f-koehler/cpp-perf)](https://github.com/f-koehler/cpp-perf/blob/main/LICENSE)
 
 A small, header-only performance measurement library for C++11.
 
 
-Most basic usage
-----------------
+## Most basic usage
+
 ``` c++
 #include <cpp-perf.hpp>
 
@@ -24,8 +26,8 @@ Output:
 20 ms
 ```
 
-Inline measurement
-------------------
+## Inline measurement
+
 ``` c++
 #include <cpp-perf.hpp>
 
@@ -53,8 +55,7 @@ Output:
 If you put ```#ifdef PERF_DISABLE_INLINE``` in front of the include ```#include <cpp-perf.hpp>``` there will no measurement be performed. The macros are actually expanded int empty lines so that your code is the same as if you would not have put them there.
 
 
-Automatic suite
----------------
+## Automatic suite
 
 ``` c++
 #include <cpp-perf.hpp>
@@ -78,8 +79,7 @@ Output:
 ```
 
 
-Manual suites
--------------
+## Manual suites
 
 ``` c++
 #include <cpp-perf.hpp>
