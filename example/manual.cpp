@@ -44,7 +44,6 @@ struct example3
     {
         // exceptions will be caught
         throw std::string("This fails!");
-        return true;
     }
 };
 

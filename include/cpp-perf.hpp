@@ -317,7 +317,7 @@ namespace perf
          *
          * \param[in] name The name of the suite. The default is PerfSuite
          */
-        suite(std::string name = "PerfSuite") : m_name(std::move(name)) {}
+        explicit suite(std::string name = "PerfSuite") : m_name(std::move(name)) {}
 
         /**
          * \brief Constructor to create a suite with cases.
@@ -327,7 +327,7 @@ namespace perf
          * \param[in] cases The initial cases of the suite
          * \param[in] name The name of the suite. The default is PerfSuite
          */
-        suite(const std::vector<std::pair<std::string, perf_func>> &cases, std::string name = "PerfSuite") : m_name(std::move(name))
+        explicit suite(const std::vector<std::pair<std::string, perf_func>> &cases, std::string name = "PerfSuite") : m_name(std::move(name))
         {
             for (const auto &c : cases)
                 add_case(c.first, c.second);
@@ -370,12 +370,12 @@ namespace perf
         void run()
         {
             clock clk;
-            time_point start, stop;
+            time_point time_start, time_stop;
             m_total_time = nanoseconds(0);
 
             for (auto &c : m_cases)
             {
-                start = clk.now();
+                time_start = clk.now();
                 try
                 {
                     c.success = c.f();
@@ -384,8 +384,8 @@ namespace perf
                 {
                     c.success = false;
                 }
-                stop = clk.now();
-                c.time = stop - start;
+                time_stop = clk.now();
+                c.time = time_stop - time_start;
                 m_total_time += c.time;
             }
         }
