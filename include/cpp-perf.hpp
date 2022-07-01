@@ -451,7 +451,7 @@ namespace perf
                 success_str = "  Failed  ";
             time_str = format_duration(c.time);
 
-            o << num_str << '/' << num_cases_str << ' ' << "Case #" << num_str << ": " << name_str << success_str << time_str << std::endl;
+            o << num_str << '/' << num_cases_str << ' ' << "Case #" << num_str << ": " << name_str << success_str << time_str << '\n';
         }
 
         return o;
@@ -534,7 +534,7 @@ namespace perf
     void stop()
     {
         timer_stack().top().stop();
-        *inline_out_ptr() << timer_stack().top() << std::endl;
+        *inline_out_ptr() << timer_stack().top() << '\n';
         timer_stack().pop();
     }
 
@@ -554,10 +554,10 @@ namespace perf
     perf::inline_timer_stack().push(perf::inline_timer(__FILE__, __LINE__, __FUNCTION__)); \
     perf::inline_timer_stack().top().start();
 
-#define PERF_STOP()                                                           \
-    perf::inline_timer_stack().top().stop();                                  \
-    perf::inline_timer_stack().top().set_last_line(__LINE__);                 \
-    *perf::inline_out_ptr() << perf::inline_timer_stack().top() << std::endl; \
+#define PERF_STOP()                                                      \
+    perf::inline_timer_stack().top().stop();                             \
+    perf::inline_timer_stack().top().set_last_line(__LINE__);            \
+    *perf::inline_out_ptr() << perf::inline_timer_stack().top() << '\n'; \
     perf::inline_timer_stack().pop();
 
 #endif
@@ -568,9 +568,9 @@ namespace perf
         perf::suite perf_auto_suite; \
         perf_auto_suite.set_name(name);
 
-#define PERF_END()                                         \
-    perf_auto_suite.run();                                 \
-    *perf::auto_out_ptr() << perf_auto_suite << std::endl; \
+#define PERF_END()                                    \
+    perf_auto_suite.run();                            \
+    *perf::auto_out_ptr() << perf_auto_suite << '\n'; \
     }
 
 #define PERF_CASE(name, ...) \
