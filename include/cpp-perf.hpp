@@ -150,9 +150,9 @@ namespace perf
     std::string format_code_position(const std::string &file, std::size_t line, const std::string &function = "")
     {
         std::stringstream strm;
-        strm << file << ":";
+        strm << '#' << std::this_thread::get_id() << ':' << file << ':';
         if (!function.empty())
-            strm << function << ":";
+            strm << function << ':';
         strm << line;
         return strm.str();
     }
@@ -471,7 +471,7 @@ namespace perf
      */
     std::ostream *inline_out_ptr()
     {
-        static std::ostream *inline_out_ptr = &std::cout;
+        static thread_local std::ostream *inline_out_ptr = &std::cout;
         return inline_out_ptr;
     }
 
@@ -485,7 +485,7 @@ namespace perf
      */
     std::ostream *auto_out_ptr()
     {
-        static std::ostream *auto_out_ptr = &std::cout;
+        static thread_local std::ostream *auto_out_ptr = &std::cout;
         return auto_out_ptr;
     }
 
@@ -498,7 +498,7 @@ namespace perf
      */
     std::stack<timer> &timer_stack()
     {
-        static std::stack<timer> timer_stack;
+        static thread_local std::stack<timer> timer_stack;
         return timer_stack;
     }
 
@@ -511,7 +511,7 @@ namespace perf
      */
     std::stack<inline_timer> &inline_timer_stack()
     {
-        static std::stack<inline_timer> inline_timer_stack;
+        static thread_local std::stack<inline_timer> inline_timer_stack;
         return inline_timer_stack;
     }
 

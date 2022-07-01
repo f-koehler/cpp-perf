@@ -1,11 +1,13 @@
 cppperf_add_executable(auto auto.cpp)
 cppperf_add_executable(inline inline.cpp)
+cppperf_add_executable(inline_mt inline_mt.cpp)
 cppperf_add_executable(manual manual.cpp)
 cppperf_add_executable(basic basic.cpp)
 
 if(${PERF_TESTS})
     add_test("example.auto" auto)
     add_test("example.inline" inline)
+    add_test("example.inline_mt" inline_mt)
     add_test("example.manual" manual)
     add_test("example.basic" basic)
 endif()
