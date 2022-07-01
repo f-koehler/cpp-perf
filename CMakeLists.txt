@@ -28,8 +28,7 @@ endmacro()
 # macro to add executable
 macro(cppperf_add_executable target sources)
     add_executable(${target} ${sources})
-
-    # cppperf_enable_warnings(${target})
+    cppperf_enable_warnings(${target})
     target_compile_options(${target} PRIVATE
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-O>
     )

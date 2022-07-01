@@ -96,35 +96,35 @@ namespace perf
         std::stringstream strm;
 
         auto h = std::chrono::duration_cast<hours>(time);
-        if (h.count() >= 1.)
+        if (h.count() >= 1l)
         {
             strm << h.count() << " h";
             return strm.str();
         }
 
         auto m = std::chrono::duration_cast<minutes>(time);
-        if (m.count() >= 1.)
+        if (m.count() >= 1l)
         {
             strm << m.count() << " min";
             return strm.str();
         }
 
         auto s = std::chrono::duration_cast<seconds>(time);
-        if (s.count() >= 10.)
+        if (s.count() >= 10l)
         {
             strm << s.count() << " s";
             return strm.str();
         }
 
         auto ms = std::chrono::duration_cast<milliseconds>(time);
-        if (ms.count() >= 1.)
+        if (ms.count() >= 1l)
         {
             strm << ms.count() << " ms";
             return strm.str();
         }
 
         auto mus = std::chrono::duration_cast<microseconds>(time);
-        if (mus.count() >= 1.)
+        if (mus.count() >= 1l)
         {
             strm << mus.count() << " \u03BCs";
             return strm.str();
