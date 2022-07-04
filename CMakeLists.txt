@@ -25,6 +25,9 @@ macro(cppperf_enable_warnings target)
     )
 endmacro()
 
+# determin threading library
+find_package(Threads)
+
 # macro to add executable
 macro(cppperf_add_executable target sources)
     add_executable(${target} ${sources})
@@ -32,6 +35,7 @@ macro(cppperf_add_executable target sources)
     target_compile_options(${target} PRIVATE
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-O>
     )
+    target_link_libraries(${target} PRIVATE Threads::Threads)
 endmacro()
 
 include_directories(include)
