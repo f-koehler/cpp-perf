@@ -91,4 +91,5 @@ jobs:
       - name: CMake build.
         run: cmake --build build
       - name: Run tests.
-        run: ctest --test-dir build --build-run-dir build
+        run: ctest
+        working-directory: "./build"
