@@ -9,10 +9,8 @@ endmacro()
 
 cppperf_add_test_executable(format_code_position test_format_code_position.cpp)
 cppperf_add_test_executable(format_duration test_format_duration.cpp)
-cppperf_add_test_executable(format_functions test_functions.cpp)
-cppperf_add_test_executable(format_timer test_timer.cpp)
+cppperf_add_test_executable(timer test_timer.cpp)
 
 add_test("test.format_code_position" format_code_position)
 add_test("test.format_duration" format_duration)
-add_test("test.format_functions" format_functions)
-add_test("test.format_timer" format_timer)
+add_test("test.timer" timer)
