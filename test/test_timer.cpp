@@ -47,5 +47,5 @@ BOOST_AUTO_TEST_CASE(get_duration)
     std::ostringstream strm;
     strm << t;
 
-    BOOST_CHECK_EQUAL(perf::format_duration(t.duration()), "42 ms");
+    BOOST_CHECK_EQUAL(perf::format_duration(t.get_duration()), "42 ms");
 }

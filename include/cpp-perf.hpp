@@ -219,7 +219,7 @@ namespace perf
          * \brief This function returns the time interval between the start and the stop of the timer as a duration.
          * \return The elapsed time as a duration.
          */
-        duration duration() const
+        duration get_duration() const
         {
             return m_stop - m_start;
         }
@@ -284,7 +284,7 @@ namespace perf
          * \brief This function returns the time interval between the start and the stop of the timer as a duration.
          * \return The elapsed time as a duration.
          */
-        duration duration() const
+        duration get_duration() const
         {
             return m_stop - m_start;
         }
@@ -407,7 +407,7 @@ namespace perf
      */
     std::ostream &operator<<(std::ostream &o, const timer &t)
     {
-        o << format_duration(t.duration());
+        o << format_duration(t.get_duration());
         return o;
     }
 
@@ -417,7 +417,7 @@ namespace perf
         strm << format_code_position(timer.m_file, timer.m_first_line, timer.m_function);
         if (timer.m_last_line > timer.m_first_line)
             strm << "-" << timer.m_last_line;
-        strm << ": " << format_duration(timer.duration());
+        strm << ": " << format_duration(timer.get_duration());
         o << strm.str();
         return o;
     }
