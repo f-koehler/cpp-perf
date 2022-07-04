@@ -413,10 +413,12 @@ namespace perf
 
     std::ostream &operator<<(std::ostream &o, const inline_timer &timer)
     {
-        o << format_code_position(timer.m_file, timer.m_first_line, timer.m_function);
+        std::ostringstream strm;
+        strm << format_code_position(timer.m_file, timer.m_first_line, timer.m_function);
         if (timer.m_last_line > timer.m_first_line)
-            o << "-" << timer.m_last_line;
-        o << ": " << format_duration(timer.duration());
+            strm << "-" << timer.m_last_line;
+        strm << ": " << format_duration(timer.duration());
+        o << strm.str();
         return o;
     }
 
