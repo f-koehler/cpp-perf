@@ -36,11 +36,11 @@ endmacro()
 
 include_directories(include)
 
-if(${PERF_TESTS})
+if(${CPPPERF_TESTS})
     enable_testing()
     add_subdirectory(test)
 endif()
 
-if(${PERF_EXAMPLES})
+if(${CPPPERF_EXAMPLES})
     add_subdirectory(example)
 endif()
