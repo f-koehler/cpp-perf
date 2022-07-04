@@ -25,7 +25,7 @@ macro(cppperf_enable_warnings target)
     )
 endmacro()
 
-# determin threading library
+# determine threading library
 find_package(Threads)
 
 # macro to add executable
